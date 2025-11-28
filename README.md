@@ -28,6 +28,17 @@ Code snippet demonstrating the file format to folder mapping:
             logging.error(f"Error moving {file.name}: {e}")
 ```
 
+### How i use it on my machine
+
+I have the repository cloned on my local machine and created a simple batch script to run it straight from my desktop:
+
+```bash
+@echo off
+cd /d "<PATH TO REPOSITORY>\download-organizer"
+uv run main.py
+pause
+```
+
 ### Requirements
 
 - last tested with Python 3.14
