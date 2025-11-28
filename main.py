@@ -1,48 +1,73 @@
 import logging
+import time
 from pathlib import Path
-from ressources.file_formats import FILE_FORMAT_FOLDERS
-from src.utils import invalidPath, isNotaFile, autoSort, manualSort, FOLDER_PATH, FOLDER
 from tqdm import tqdm
+from assets.file_formats import FILE_FORMAT_FOLDERS
+from src.utils import clear_console, invalid_path, not_a_file, sort_file
 
-LOGFILE = Path(f"logs/folder_cleanup_{FOLDER}.log")  # Path to the log file
+FOLDER = "Downloads" # Name of the folder to be sorted
+FOLDER_PATH = Path.joinpath(Path.home(), FOLDER)  # Path to the folder to be sorted
+LOGFILE = Path.joinpath(Path("logs"), f"folder_cleanup_{FOLDER}.log")
 
-if not LOGFILE.parent.exists():
-    LOGFILE.parent.mkdir(parents=True)
-if not LOGFILE.exists():
-    LOGFILE.touch()
+SLEEP_TIME = 0.3  # Time to sleep between processing files (in seconds)
+
+if invalid_path(LOGFILE.parent):
+    LOGFILE.parent.mkdir(parents=True, exist_ok=True)
 
 logging.basicConfig(
     level=logging.INFO,
     format="%(asctime)s - %(levelname)s - %(message)s",
-    handlers=[logging.FileHandler("logs/file_sorter.log"), logging.StreamHandler()],
+    handlers=[logging.FileHandler(LOGFILE), logging.StreamHandler()],
 )
 
-def main():    
-    if invalidPath(FOLDER_PATH):
-        logging.error("FOLDER_PATH Variable is invalid")
+def main() -> None:
+    """ Main function to sort files in the specified folder. """
+
+    if invalid_path(FOLDER_PATH):
+        logging.error(f"FOLDER_PATH Variable is invalid, got: {FOLDER_PATH}")
         return
 
-    setting = (
-        input("Do you want to automatically sort your files? (Y/n) > ").lower() or "y"
+    clear_console()
+
+    mode = (
+            input(
+    f"""
+    Welcome to Download Organizer!
+    You are about to sort files in the folder: {FOLDER_PATH}
+
+        (1) Automatically sort your files
+        (2) Manually sort your files
+
+        (q to quit)
+
+    Select mode for sorting files:  """
+        )
     )
 
-    files = [file for file in FOLDER_PATH.iterdir() if not isNotaFile(file)]
-    total_files = len(files)
+    clear_console()
 
-    match (setting):
-        case "y":
-            logging.info("Start iterating automatically\n")
-            for file in tqdm(files, total=total_files, desc="Sorting files"):
-                print("")
-                autoSort(file)
-                print("")
-        case "n":
-            logging.info("Start iterating manually\n")
-            for file in tqdm(files, total=total_files, desc="Sorting files"):
-                manualSort(file)
-        case _:
-            logging.error(f"Invalid Input: {setting}")
-            return
+    if mode.lower() == "q":
+        logging.info("Quitting the program.")
+        return
+
+    mode = "auto" if mode == "1" else "manual" if mode == "2" else None
+    files = [file for file in FOLDER_PATH.iterdir() if not not_a_file(file)]
+
+    if mode is None:
+        logging.error(f"Invalid Input: {mode}")
+        return
+    
+    logging.info(f"START SORTING {len(files)} FILES IN {FOLDER_PATH} (MODE: {mode.upper()})")
+
+    for file in tqdm(files, total=len(files), desc="Sorting files"):
+        logging.info(f"Processing file: {file.name} in {FOLDER_PATH}")
+        sort_file(file, mode)
+        time.sleep(SLEEP_TIME)
+        if(mode == "manual"):
+            clear_console()
+
+    logging.info("SORTING COMPLETED.\n")
+    
 
 if __name__ == "__main__":
     main()
