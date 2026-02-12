@@ -1,3 +1,5 @@
+"""File extension to folder category mappings."""
+
 from typing import Dict
 
 FILE_FORMAT_FOLDERS: Dict[str, str] = {
@@ -7,23 +9,30 @@ FILE_FORMAT_FOLDERS: Dict[str, str] = {
     ".docx": "Documents",
     ".pdf": "Documents",
     ".ppt": "Documents",
+    ".pptx": "Documents",
     ".heic": "Images",
     ".jpg": "Images",
     ".jpeg": "Images",
     ".png": "Images",
     ".gif": "Images",
+    ".bmp": "Images",
+    ".svg": "Images",
     ".mp3": "Music",
     ".wav": "Music",
+    ".flac": "Music",
+    ".aac": "Music",
     ".mp4": "Videos",
     ".avi": "Videos",
     ".mov": "Videos",
     ".wmv": "Videos",
+    ".mkv": "Videos",
     ".exe": "Executables",
     ".msi": "Executables",
     ".zip": "Zipped",
     ".rar": "Zipped",
     ".tar": "Zipped",
     ".7z": "Zipped",
+    ".gz": "Zipped",
     ".iso": "Zipped",
     ".csv": "Spreadsheets",
     ".xlsx": "Spreadsheets",
@@ -31,6 +40,13 @@ FILE_FORMAT_FOLDERS: Dict[str, str] = {
     ".json": "Scripts",
     ".py": "Scripts",
     ".js": "Scripts",
+    ".ts": "Scripts",
     ".html": "Scripts",
     ".css": "Scripts",
+    ".java": "Scripts",
+    ".cpp": "Scripts",
+    ".c": "Scripts",
 }
+
+# Default category for unknown file types
+DEFAULT_CATEGORY = "Others"

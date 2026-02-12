@@ -1,61 +1,134 @@
-> simple script to organize your downloads folder based on file types
+# 📁 Folder Organizer
 
-# download-organizer
+Automatic file organization tool with interactive CLI built with Python and Rich.
 
-The **download-organizer** is a Python script that automatically sorts files into different folders based on their file format. The script uses the _Downloads folder_ by default (this can be adjusted by changing the _PATH_ constant)
-The script has two modes of operation: automatic sorting or an assisted manual sorting. It also includes logging functionality to keep track of the sorting process.
+## Features
 
-This simple script helped me to unclutter my Downloads folder. It might help you too! Installation and usage instructions are provided below.
+- 🚀 **Automatic Mode**: Organize all files automatically based on file extensions
+- 🎯 **Interactive Mode**: Review and decide for each file individually
+- 📊 **Rich CLI**: Beautiful command-line interface with progress bars and tables
+- 📝 **Detailed Logging**: All operations logged with timestamps
+- 🔄 **Smart Renaming**: Automatic handling of filename conflicts
+- 🎨 **Customizable**: Easy to extend with new file categories
 
-### How it works
+## Installation
 
-In assets folder, the user can define which file formats should be sorted into which folders. The file maps each file format to a specific folder name. If a file format is not defined in the mapping, the file will be moved to an "Other" folder. 
-
-Code snippet demonstrating the file format to folder mapping:
-
-```python
-   # Get the file format of the file and determine destination folder
-    file_type = file.suffix.lower()
-    target_folder : str = FILE_FORMAT_FOLDERS.get(file_type, "Other")
-    target_path : Path = Path.joinpath(file.parent, target_folder)
-
-   # Move the file to the corresponding folder in automatic mode
-    if mode == "auto":
-        try:
-            logging.info(f"Moving {file.name} to {target_folder} folder")
-            file.rename(Path.joinpath(target_path, file.name))
-        except Exception as e:
-            logging.error(f"Error moving {file.name}: {e}")
-```
-
-### How i use it on my machine
-
-I have the repository cloned on my local machine and created a simple batch script to run it straight from my desktop:
+This project uses [uv](https://github.com/astral-sh/uv) for dependency management.
 
 ```bash
-@echo off
-cd /d "<PATH TO REPOSITORY>\download-organizer"
-uv run main.py
-pause
+# Install uv if you haven't already
+curl -LsSf https://astral.sh/uv/install.sh | sh
+
+# Clone the repository
+git clone <your-repo-url>
+cd folder-organizer
+
+# Install dependencies
+uv sync
 ```
 
-### Requirements
+## Usage
 
-- last tested with Python 3.14
-- logging>=0.4.9.6
-- pathlib>=1.0.1
-- tqdm>=4.67.1
+### Quick Start
 
-The repository is developed with `uv`. So you can install all the necessary dependencies with `uv sync`.
+```bash
+# Run in interactive mode (default: Downloads folder)
+uv run folder-organizer -i
 
-### Usage
+# Run in automatic mode
+uv run folder-organizer --auto
 
-1. Clone the repository to your local machine.
-2. Adjust the `PATH` variable in `main.py` to the path of the directory you want to sort.
-3. Add any file formats you want to sort to the `assets` dictionary in `file_formats.py`.
-3. Run the script using `uv run main.py` and follow the CLI instructions.
+# Organize a custom folder
+uv run folder-organizer --source /path/to/folder -i
 
-# Contributing
+# Preview changes without moving files
+uv run folder-organizer --dry-run -i
+```
 
-I have more features planned, such as scheduling the script, adding a GUI, or add context-based sorting by analyzing file names and contents.
-If you would like to contribute, please fork the repository and submit a pull request.
+### Command Line Options
+
+```
+-h, --help              Show help message
+-s, --source PATH       Source directory to organize (default: Downloads)
+--dry-run               Preview changes without moving files
+--auto                  Run in automatic mode
+-i, --interactive       Run in interactive mode
+```
+
+## How It Works
+
+The organizer categorizes files based on their extensions:
+
+- **Documents**: .pdf, .docx, .doc, .ppt, .pptx
+- **Images**: .jpg, .png, .gif, .heic, .svg
+- **Videos**: .mp4, .avi, .mov, .mkv, .wmv
+- **Music**: .mp3, .wav, .flac, .aac
+- **Scripts**: .py, .js, .html, .css, .json
+- **Spreadsheets**: .xlsx, .xls, .csv
+- **Executables**: .exe, .msi
+- **Zipped**: .zip, .rar, .tar, .7z, .gz
+- **Text**: .txt, .md
+- **Others**: Any unrecognized file type
+
+Files are moved to subdirectories within the source folder (e.g., `Downloads/Documents/`, `Downloads/Images/`).
+
+## Interactive Mode
+
+In interactive mode, you can choose an action for each file:
+
+- **[a] Auto**: Move to suggested category
+- **[m] Manual**: Choose category manually
+- **[d] Delete**: Remove the file
+- **[s] Skip**: Leave file as is
+
+## Project Structure
+
+```
+folder-organizer/
+├── src/
+│   ├── __init__.py
+│   ├── __main__.py          # Entry point
+│   ├── cli.py               # Rich-based CLI
+│   ├── organizer.py         # Core organization logic
+│   ├── config.py            # Configuration management
+│   ├── file_formats.py      # File extension mappings
+│   ├── logger.py            # Logging system
+│   └── utils.py             # Helper functions
+├── tests/                    # Unit tests
+├── logs/                     # Log files (auto-created)
+├── pyproject.toml
+└── README.md
+```
+
+## Development
+
+### Running Tests
+
+```bash
+# Install dev dependencies
+uv sync --dev
+
+# Run tests
+uv run pytest
+
+# Run tests with coverage
+uv run pytest --cov=src
+```
+
+### Adding New File Categories
+
+Edit `src/file_formats.py` and add new extensions:
+
+```python
+FILE_FORMAT_FOLDERS: Dict[str, str] = {
+    ".txt": "Text",
+    ".new_extension": "YourCategory",
+    # ... more extensions
+}
+```
+
+
+
+## Contributing
+
+Contributions are welcome! Please feel free to submit a Pull Request.
