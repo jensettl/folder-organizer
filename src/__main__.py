@@ -2,12 +2,10 @@
 
 import sys
 from pathlib import Path
-from typing import Optional
 
 from rich.console import Console
 
 from .config import OrganizerConfig
-from .logger import FileOperationLogger
 from .cli import CLI
 
 
