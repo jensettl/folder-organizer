@@ -2,6 +2,8 @@
 
 Automatic file organization tool with interactive CLI built with Python and Rich.
 
+![Demo](/assets/demo-manual-run.webp)
+
 ## Features
 
 - 🚀 **Automatic Mode**: Organize all files automatically based on file extensions
@@ -43,6 +45,15 @@ uv run folder-organizer --source /path/to/folder -i
 
 # Preview changes without moving files
 uv run folder-organizer --dry-run -i
+
+# Alternative (on windows) add this function to your PowerShell profile ($PROFILE) for quick access
+
+function organizer {
+    Set-Location "C:\Users\User\Documents\coding\_python\folder-organizer"
+    uv run folder-organizer
+}
+
+# then you can just run `organizer` from any PowerShell prompt to launch the app
 ```
 
 ### Command Line Options
